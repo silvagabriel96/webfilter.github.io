@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Text filter</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <script src="jquery.js"></script>
+    <script src="functions.js"></script>
+    <script>
+        $(document).ready(function () {
+            let input = document.querySelector('input');
+            let textarea = document.querySelector('textarea');
+            input.addEventListener('change', () => {
+                let files = input.files;
+                if (files.length == 0) return;
+                const file = files[0];
+                let reader = new FileReader();
+                reader.onload = (e) => {
+                    const file = e.target.result;
+                    const textArray = file.split(';');
+                    var duplicatedArray = [];
+
+                    for (var i = 0; i < textArray.length; i++) {
+                        for (var j = i+1; j < textArray.length; j++) {
+                            if(textArray[i] === textArray[j]) {
+                                console.log("no contains");
+                                if (!duplicatedArray.includes(textArray[i])) {
+                                    console.log("no contains");
+                                    console.log(textArray[i]);
+                                    duplicatedArray.push(textArray[i]);
+                                }
+                            }
+                        }
+                    }
+
+                    const sortedArray = duplicatedArray.sort(function(a, b) {
+                        var aSplited = a.split(',');
+                        var bSplited = b.split(',');
+                        
+                        aSplited = parseFloat(aSplited[0].replace(":","."));
+                        bSplited = parseFloat(bSplited[0].replace(":","."));
+
+                        return aSplited-bSplited;
+                    });
+                    // console.log(sortedArray);
+                    textarea.value = sortedArray;
+                };
+                reader.onerror = (e) => alert(e.target.error.name);
+                reader.readAsText(file);
+            });
+
+            function toFindDuplicates(arry) {
+            const uniqueElements = new Set(arry);
+            const filteredElements = arry.filter(item => {
+                if (uniqueElements.has(item)) {
+                    uniqueElements.delete(item);
+                } else {
+                    return item;
+                }
+            });
+
+            return [...new Set(uniqueElements)]
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div>
+        <h3 style="color: red;">Padrão esperado:" 14:25,AUDJPY,PUT,M5; "</h3>
+        <input type="file">
+        <br>
+        <br>
+        <textarea cols="45" rows="20"></textarea>
+    </div>
+</body>
+
+</html>
